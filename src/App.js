@@ -52,7 +52,9 @@ function ListItem(props) {
   const { author, title, url, points, num_comments } = props.details;
   return (
     <li className="list-item">
-      <span className="list-item__title">{title}</span>
+      <span className="list-item__title">
+        <a href={url} className="list-item__url">{title}</a>
+      </span>
       <span className="list-item__meta">{author}</span>
       <span className="list-item__meta">{points}</span>
       <span className="list-item__meta">{num_comments}</span>
@@ -80,8 +82,8 @@ function isSearched(searchTerm) {
 }
 
 function DataContainer(props) {
-  debugger;
-  if(props.isLoading == 'progress') {
+  const {isLoading, items} = props;
+  if(isLoading == 'progress') {
     return (
       <div class="spinner">
       <div class="rect1"></div>
@@ -92,9 +94,8 @@ function DataContainer(props) {
     </div>
   )
   } else {
-    
     return (
-      props.items.map(item => (
+      items.map(item => (
         <ListItem key={item.objectID} details={item} />
       ))
     )
@@ -156,15 +157,8 @@ class App extends Component {
           {/* {this.state.hn_posts.map(item => (
             <ListItem key={item.objectID} details={item} />
           ))} */}
-          <li className="list-item">
-            <span className="list-item__title">title</span>
-            <span className="list-item__meta">author</span>
-            <span className="list-item__meta">points</span>
-            <span className="list-item__meta">num_comments</span>
-          </li>
           
           <DataContainer isLoading={this.state.isLoading} items={this.state.hn_posts}/>
-          
           
           {/* {this.state.hn_posts.filter(isSearched(this.state.searchTerm)).map(item => (
             <ListItem key={item.objectID} details={item} />
