@@ -40,16 +40,22 @@ const test_items = [
 function Tabs(props) {
   return (
     <div className="searchtabs">
-      <span><a href="#" onClick={(e) => props.loadData(e)}>Javascript</a></span>
-      <span><a href="#" onClick={(e) => props.loadData(e)}>React</a></span>
-      <span><a href="#" onClick={(e) => props.loadData(e)}>Node</a></span>
-      <span><a href="#" onClick={(e) => props.loadData(e)}>Vue</a></span>
+      <span><a className="btn" href="#" onClick={(e) => props.loadData(e)}>Javascript</a></span>
+      <span><a className="btn" href="#" onClick={(e) => props.loadData(e)}>React</a></span>
+      <span><a className="btn" href="#" onClick={(e) => props.loadData(e)}>Node</a></span>
+      <span><a className="btn" href="#" onClick={(e) => props.loadData(e)}>Vue</a></span>
     </div>
   )
 }
 
 function ListItem(props) {
-  const { author, title, url, points, num_comments } = props.details;
+  const { 
+    author, 
+    title, 
+    url, 
+    points, 
+    num_comments,
+    story_url } = props.details;
   return (
     <li className="list-item">
       <span className="list-item__title">
@@ -58,6 +64,7 @@ function ListItem(props) {
       <span className="list-item__meta">{author}</span>
       <span className="list-item__meta">{points}</span>
       <span className="list-item__meta">{num_comments}</span>
+      <span className="list-item__meta">{story_url}</span>
     </li>
   );
 }
@@ -83,14 +90,15 @@ function isSearched(searchTerm) {
 
 function DataContainer(props) {
   const {isLoading, items} = props;
+  // debugger;
   if(isLoading == 'progress') {
     return (
-      <div class="spinner">
-      <div class="rect1"></div>
-      <div class="rect2"></div>
-      <div class="rect3"></div>
-      <div class="rect4"></div>
-      <div class="rect5"></div>
+      <div className="spinner">
+      <div className="rect1"></div>
+      <div className="rect2"></div>
+      <div className="rect3"></div>
+      <div className="rect4"></div>
+      <div className="rect5"></div>
     </div>
   )
   } else {
@@ -151,7 +159,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Header onSearchChange={this.onSearchChange} />
+        {/* <Header onSearchChange={this.onSearchChange} /> */}
         <Tabs loadData={this.loadData}/>
         <ul className="main-list">
           {/* {this.state.hn_posts.map(item => (

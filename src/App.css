@@ -89,11 +89,15 @@ body {
 .list-item__title {
   background-color: #2b3042;
   display: block;
+  margin-bottom: 10px;
 }
 
 @media (min-width: 450px) {
   .list-item { display: flex; }
-  .list-item__title { flex: 0 0 70%; }
+  .list-item__title { 
+    flex: 0 0 70%; 
+    margin: 0px;
+  }
   .list-item__meta { flex: 1 1 auto; }
   /* shorthand for flex grow, shrink, basis; */
 }
@@ -107,7 +111,7 @@ body {
 .list-item__title a { color: white; }
 
 .searchform input {
-  width: 600px;
+  width: 100%;
 }
 
 .searchtabs {
