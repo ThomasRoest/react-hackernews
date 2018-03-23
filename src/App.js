@@ -49,13 +49,14 @@ function Tabs(props) {
 }
 
 function ListItem(props) {
+  const commentUrl = `https://news.ycombinator.com/item?id=${props.details.objectID}`
   const { 
     author, 
     title, 
     url, 
     points, 
-    num_comments,
-    story_url } = props.details;
+    objectID,
+    num_comments } = props.details;
   return (
     <li className="list-item">
       <span className="list-item__title">
@@ -63,8 +64,12 @@ function ListItem(props) {
       </span>
       <span className="list-item__meta">{author}</span>
       <span className="list-item__meta">{points}</span>
+      <span className="list-item__meta">
+        <a href={commentUrl} className="list-item__commenturl">comments</a>
+      </span>
+      
       <span className="list-item__meta">{num_comments}</span>
-      <span className="list-item__meta">{story_url}</span>
+      {/* <span className="list-item__meta">{story_url}</span> */}
     </li>
   );
 }
@@ -90,7 +95,6 @@ function isSearched(searchTerm) {
 
 function DataContainer(props) {
   const {isLoading, items} = props;
-  // debugger;
   if(isLoading == 'progress') {
     return (
       <div className="spinner">

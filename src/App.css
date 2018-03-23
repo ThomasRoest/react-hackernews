@@ -114,6 +114,8 @@ body {
   width: 100%;
 }
 
+.list-item__commenturl { color: white; }
+
 .searchtabs {
   display: flex;
   padding: 5px;
