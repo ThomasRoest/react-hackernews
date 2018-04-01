@@ -1,49 +1,21 @@
 import React, { Component } from "react";
-import logo from "./logo.svg";
+// import logo from "./logo.svg";
 import "./App.css";
 import axios from "axios";
 
-const DEFAULT_QUERY = 'redux';
-const PATH_BASE = 'https://hn.algolia.com/api/v1';
-const PATH_SEARCH = '/search';
-const PARAM_SEARCH = 'query=';
+// const DEFAULT_QUERY = 'javascript';
+// const PATH_BASE = 'https://hn.algolia.com/api/v1';
+// const PATH_SEARCH = '/search';
+// const PARAM_SEARCH = 'query=';
 
-
-
-const test_items = [
-  {
-    title: "React",
-    url: "https://facebook.github.io/react/",
-    author: "Jordan Walke",
-    num_comments: 3,
-    points: 4,
-    objectID: 0
-  },
-  {
-    title: "Redux",
-    url: "https://github.com/reactjs/redux",
-    author: "Dan Abramov, Andrew Clark",
-    num_comments: 2,
-    points: 5,
-    objectID: 1
-  },
-  {
-    title: "python",
-    url: "https://github.com/reactjs/redux",
-    author: "Dan Abramov, Andrew Clark",
-    num_comments: 2,
-    points: 5,
-    objectID: 4
-  }
-];
 
 function Tabs(props) {
   return (
     <div className="searchtabs">
-      <span><a className="btn" href="#" onClick={(e) => props.loadData(e)}>Javascript</a></span>
-      <span><a className="btn" href="#" onClick={(e) => props.loadData(e)}>React</a></span>
-      <span><a className="btn" href="#" onClick={(e) => props.loadData(e)}>Node</a></span>
-      <span><a className="btn" href="#" onClick={(e) => props.loadData(e)}>Vue</a></span>
+      <span><a className="btn" data-query="javascript" href="#" onClick={(e) => props.loadData(e)}>Javascript</a></span>
+      <span><a className="btn" data-query="react" href="#" onClick={(e) => props.loadData(e)}>React</a></span>
+      <span><a className="btn" data-query="node" href="#" onClick={(e) => props.loadData(e)}>Node</a></span>
+      <span><a className="btn" data-query="vue" href="#" onClick={(e) => props.loadData(e)}>Vue</a></span>
     </div>
   )
 }
@@ -54,22 +26,23 @@ function ListItem(props) {
     author, 
     title, 
     url, 
-    points, 
+    points,
+    created_at, 
     objectID,
     num_comments } = props.details;
   return (
     <li className="list-item">
       <span className="list-item__title">
         <a href={url} className="list-item__url">{title}</a>
+      {/* <p>{created_at}</p> */}
       </span>
+        
       <span className="list-item__meta">{author}</span>
-      <span className="list-item__meta">{points}</span>
+      <span className="list-item__meta">points {points}</span>
       <span className="list-item__meta">
         <a href={commentUrl} className="list-item__commenturl">comments</a>
       </span>
-      
       <span className="list-item__meta">{num_comments}</span>
-      {/* <span className="list-item__meta">{story_url}</span> */}
     </li>
   );
 }
@@ -121,11 +94,12 @@ class App extends Component {
     this.state = { 
       searchTerm: "", 
       hn_posts: [], 
-      test_items: test_items,
+      queryFilter: 'recent',
       isLoading: 'finished' }
     this.onDismiss = this.onDismiss.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
     this.loadData = this.loadData.bind(this);
+    this.setfilterQuery = this.setfilterQuery.bind(this);
   }
   
   onDismiss(id) {
@@ -138,25 +112,62 @@ class App extends Component {
     this.setState({ searchTerm: event.target.value });
     console.log(event.target.value);
   }
+
+  oneMonthAgo() {
+    return Math.floor(new Date().getTime() / 1000 - (60*60*24*30));
+  }
   
   
   componentDidMount() {
-    // this.setState({ isLoading: 'progress'})
-    const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}`;
-    axios.get(url).then(res => {
+    const defaultUrl = `http://hn.algolia.com/api/v1/search?query=javascript&numericFilters=created_at_i>${this.oneMonthAgo()}`;
+    
+    axios.get(defaultUrl).then(res => {
       const posts = res.data.hits;
       this.setState({ hn_posts: posts });
     });
   }
 
   loadData(e) {
-    const QUERY = e.target.textContent.toLowerCase();
-    const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${QUERY}`;
+
+    const { query } = e.target.dataset;
+
+    const url = `http://hn.algolia.com/api/v1/search?query=${query}&numericFilters=created_at_i>${this.oneMonthAgo()}`
+
+
+    // get correct url and set state
+    // const hello = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}`;
+
+    // two params: Query query=javascript, monthfilter &numericFilters=created_at_i>${this.oneMonthAgo()
+
+
+    // const urlAll = 'http://hn.algolia.com/api/v1/search?query=javascript';
+    // const urlOneMonthAgo = `http://hn.algolia.com/api/v1/search?query=javascript&numericFilters=created_at_i>${this.oneMonthAgo()}`
+  
+    // const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}&numericFilters=created_at_i>${this.oneMonthAgo()}`;
+
+
     this.setState({ isLoading: 'progress'})
+
+
     axios.get(url).then(res => {
       const posts = res.data.hits;
       this.setState({ hn_posts: posts, isLoading: 'finished' });
     });
+  //   // debugger;
+  }
+
+  setSearchQuery(e) {
+
+    // trigger ajax request with updated filters
+  }
+
+  setfilterQuery(e) {
+    e.preventDefault();
+    console.log(e.target.dataset.filter);
+    const queryFilter = e.target.dataset.filter;
+    this.setState({ queryFilter });
+
+    // trigger ajax request with updated filters
   }
 
 
@@ -165,6 +176,13 @@ class App extends Component {
       <div className="App">
         {/* <Header onSearchChange={this.onSearchChange} /> */}
         <Tabs loadData={this.loadData}/>
+        {/* <h1 onClick={this.loadData}>testing</h1> */}
+        {/* <div>
+          <a href="" data-filter="recent" onClick={(e) => this.setfilterQuery(e)}>most recent</a>
+          -
+          <a href="" data-filter="popular" onClick={(e) => this.setfilterQuery(e)}>most popular</a>
+        </div> */}
+
         <ul className="main-list">
           {/* {this.state.hn_posts.map(item => (
             <ListItem key={item.objectID} details={item} />
