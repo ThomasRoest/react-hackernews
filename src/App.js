@@ -119,7 +119,7 @@ class App extends Component {
   
   
   componentDidMount() {
-    const defaultUrl = `http://hn.algolia.com/api/v1/search?query=javascript&numericFilters=created_at_i>${this.oneMonthAgo()}`;
+    const defaultUrl = `https://hn.algolia.com/api/v1/search?query=javascript&numericFilters=created_at_i>${this.oneMonthAgo()}`;
     
     axios.get(defaultUrl).then(res => {
       const posts = res.data.hits;
@@ -131,20 +131,11 @@ class App extends Component {
 
     const { query } = e.target.dataset;
 
-    const url = `http://hn.algolia.com/api/v1/search?query=${query}&numericFilters=created_at_i>${this.oneMonthAgo()}`
+    const url = `https://hn.algolia.com/api/v1/search?query=${query}&numericFilters=created_at_i>${this.oneMonthAgo()}`
 
 
-    // get correct url and set state
     // const hello = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}`;
-
-    // two params: Query query=javascript, monthfilter &numericFilters=created_at_i>${this.oneMonthAgo()
-
-
     // const urlAll = 'http://hn.algolia.com/api/v1/search?query=javascript';
-    // const urlOneMonthAgo = `http://hn.algolia.com/api/v1/search?query=javascript&numericFilters=created_at_i>${this.oneMonthAgo()}`
-  
-    // const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}&numericFilters=created_at_i>${this.oneMonthAgo()}`;
-
 
     this.setState({ isLoading: 'progress'})
 
@@ -153,7 +144,6 @@ class App extends Component {
       const posts = res.data.hits;
       this.setState({ hn_posts: posts, isLoading: 'finished' });
     });
-  //   // debugger;
   }
 
   setSearchQuery(e) {
