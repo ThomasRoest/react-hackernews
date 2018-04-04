@@ -12,12 +12,22 @@ import axios from "axios";
 function Tabs(props) {
   return (
     <div className="searchtabs">
-      <span><a className="btn" data-query="javascript" href="#" onClick={(e) => props.loadData(e)}>Javascript</a></span>
-      <span><a className="btn" data-query="react" href="#" onClick={(e) => props.loadData(e)}>React</a></span>
-      <span><a className="btn" data-query="node" href="#" onClick={(e) => props.loadData(e)}>Node</a></span>
-      <span><a className="btn" data-query="vue" href="#" onClick={(e) => props.loadData(e)}>Vue</a></span>
+      <span><a className="btn" data-query="javascript" href="#" onClick={(e) => props.filterwithQuery(e)}>Javascript</a></span>
+      <span><a className="btn" data-query="react" href="#" onClick={(e) => props.filterwithQuery(e)}>React</a></span>
+      <span><a className="btn" data-query="node" href="#" onClick={(e) => props.filterwithQuery(e)}>Node</a></span>
+      <span><a className="btn" data-query="vue" href="#" onClick={(e) => props.filterwithQuery(e)}>Vue</a></span>
     </div>
   )
+}
+
+function DateFilter(props) {
+  return (
+    <div className="searchtabs">
+      <span><a className="btn" data-filter="month" href="#" onClick={(e) => props.filterwithDate(e)}>month</a></span>
+      <span><a className="btn" data-filter="all" href="#" onClick={(e) => props.filterwithDate(e)}>all</a></span>
+    </div>
+  )
+
 }
 
 function ListItem(props) {
@@ -47,18 +57,18 @@ function ListItem(props) {
   );
 }
 
-function Header(props) {
-  return (
-    <header>
-      <form className="searchform">
-        <input 
-          type="text"
-          onChange={props.onSearchChange}
-        />
-      </form>
-    </header>
-  );
-}
+// function Header(props) {
+//   return (
+//     <header>
+//       <form className="searchform">
+//         <input 
+//           type="text"
+//           onChange={props.onSearchChange}
+//         />
+//       </form>
+//     </header>
+//   );
+// }
 
 function isSearched(searchTerm) {
   return function(item) {
@@ -94,12 +104,13 @@ class App extends Component {
     this.state = { 
       searchTerm: "", 
       hn_posts: [], 
-      queryFilter: 'recent',
+      queryFilter: 'javascript',
+      dateFilter: 'month',
       isLoading: 'finished' }
     this.onDismiss = this.onDismiss.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
-    this.loadData = this.loadData.bind(this);
-    this.setfilterQuery = this.setfilterQuery.bind(this);
+    this.filterwithQuery = this.filterwithQuery.bind(this);
+    this.filterwithDate = this.filterwithDate.bind(this);
   }
   
   onDismiss(id) {
@@ -127,50 +138,59 @@ class App extends Component {
     });
   }
 
-  loadData(e) {
+  filterwithQuery(e) {
+    const { query } = e.target.dataset; 
+    const dateFilter = this.state.dateFilter;
 
-    const { query } = e.target.dataset;
+    const BASE_URL = 'https://hn.algolia.com/api/v1/search?query=';
 
-    const url = `https://hn.algolia.com/api/v1/search?query=${query}&numericFilters=created_at_i>${this.oneMonthAgo()}`
-
-
-    // const hello = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}`;
-    // const urlAll = 'http://hn.algolia.com/api/v1/search?query=javascript';
+    let url;
+    
+    if(dateFilter == 'month') {
+      url = `${BASE_URL}${query}&numericFilters=created_at_i>${this.oneMonthAgo()}`;
+    } else if(dateFilter == 'all') {
+      url = `${BASE_URL}${query}`;
+    }
 
     this.setState({ isLoading: 'progress'})
 
-
     axios.get(url).then(res => {
       const posts = res.data.hits;
-      this.setState({ hn_posts: posts, isLoading: 'finished' });
+      this.setState({ hn_posts: posts, isLoading: 'finished', queryFilter: query });
     });
   }
 
-  setSearchQuery(e) {
+  filterwithDate(e) {
+    const { filter } = e.target.dataset; 
+    const query = this.state.queryFilter;
+    const BASE_URL = 'https://hn.algolia.com/api/v1/search?query=';
 
-    // trigger ajax request with updated filters
+    let url;
+    
+    if(filter == 'month') {
+      url = `${BASE_URL}${query}&numericFilters=created_at_i>${this.oneMonthAgo()}`;
+    } else if(filter == 'all') {
+      url = `${BASE_URL}${query}`;
+    }
+
+    this.setState({ isLoading: 'progress'})
+    axios.get(url).then(res => {
+      const posts = res.data.hits;
+      this.setState({ hn_posts: posts, isLoading: 'finished', dateFilter: filter });
+    });
   }
-
-  setfilterQuery(e) {
-    e.preventDefault();
-    console.log(e.target.dataset.filter);
-    const queryFilter = e.target.dataset.filter;
-    this.setState({ queryFilter });
-
-    // trigger ajax request with updated filters
-  }
-
 
   render() {
     return (
       <div className="App">
         {/* <Header onSearchChange={this.onSearchChange} /> */}
-        <Tabs loadData={this.loadData}/>
+        <Tabs filterwithQuery={this.filterwithQuery}/>
+        <DateFilter filterwithDate={this.filterwithDate}/>
         {/* <h1 onClick={this.loadData}>testing</h1> */}
         {/* <div>
-          <a href="" data-filter="recent" onClick={(e) => this.setfilterQuery(e)}>most recent</a>
+          <a href="" data-filter="recent" onClick={(e) => this.loadData(e)}>most recent</a>
           -
-          <a href="" data-filter="popular" onClick={(e) => this.setfilterQuery(e)}>most popular</a>
+          <a href="" data-filter="popular" onClick={(e) => this.loadData(e)}>most popular</a>
         </div> */}
 
         <ul className="main-list">
