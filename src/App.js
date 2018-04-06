@@ -22,9 +22,11 @@ function Tabs(props) {
 
 function DateFilter(props) {
   return (
-    <div className="searchtabs">
-      <span><a className="btn" data-filter="month" href="#" onClick={(e) => props.filterwithDate(e)}>month</a></span>
-      <span><a className="btn" data-filter="all" href="#" onClick={(e) => props.filterwithDate(e)}>all</a></span>
+    <div>
+      <button className="btn-datefilter" data-filter="month" onClick={(e) => props.filterwithDate(e)}>month</button>
+      <button className="btn-datefilter" data-filter="all" onClick={(e) => props.filterwithDate(e)}>all</button>
+      {/* <span><a className="btn btn-active" data-filter="month" href="#" onClick={(e) => props.filterwithDate(e)}>month</a></span> */}
+      {/* <span><a className="btn" data-filter="all" href="#" onClick={(e) => props.filterwithDate(e)}>all</a></span> */}
     </div>
   )
 
@@ -76,7 +78,7 @@ function isSearched(searchTerm) {
   }
 }
 
-function DataContainer(props) {
+function List(props) {
   const {isLoading, items} = props;
   if(isLoading == 'progress') {
     return (
@@ -128,7 +130,6 @@ class App extends Component {
     return Math.floor(new Date().getTime() / 1000 - (60*60*24*30));
   }
   
-  
   componentDidMount() {
     const defaultUrl = `https://hn.algolia.com/api/v1/search?query=javascript&numericFilters=created_at_i>${this.oneMonthAgo()}`;
     
@@ -138,22 +139,23 @@ class App extends Component {
     });
   }
 
-  filterwithQuery(e) {
-    const { query } = e.target.dataset; 
-    const dateFilter = this.state.dateFilter;
-
+  getUrl(query, dateFilter){
     const BASE_URL = 'https://hn.algolia.com/api/v1/search?query=';
-
     let url;
-    
     if(dateFilter == 'month') {
       url = `${BASE_URL}${query}&numericFilters=created_at_i>${this.oneMonthAgo()}`;
     } else if(dateFilter == 'all') {
       url = `${BASE_URL}${query}`;
     }
+    return url;
+  }
+
+  filterwithQuery(e) {
+    const { query } = e.target.dataset; 
+    const dateFilter = this.state.dateFilter;
+    const url = this.getUrl(query, dateFilter);
 
     this.setState({ isLoading: 'progress'})
-
     axios.get(url).then(res => {
       const posts = res.data.hits;
       this.setState({ hn_posts: posts, isLoading: 'finished', queryFilter: query });
@@ -163,15 +165,7 @@ class App extends Component {
   filterwithDate(e) {
     const { filter } = e.target.dataset; 
     const query = this.state.queryFilter;
-    const BASE_URL = 'https://hn.algolia.com/api/v1/search?query=';
-
-    let url;
-    
-    if(filter == 'month') {
-      url = `${BASE_URL}${query}&numericFilters=created_at_i>${this.oneMonthAgo()}`;
-    } else if(filter == 'all') {
-      url = `${BASE_URL}${query}`;
-    }
+    const url = this.getUrl(query, filter);
 
     this.setState({ isLoading: 'progress'})
     axios.get(url).then(res => {
@@ -186,23 +180,8 @@ class App extends Component {
         {/* <Header onSearchChange={this.onSearchChange} /> */}
         <Tabs filterwithQuery={this.filterwithQuery}/>
         <DateFilter filterwithDate={this.filterwithDate}/>
-        {/* <h1 onClick={this.loadData}>testing</h1> */}
-        {/* <div>
-          <a href="" data-filter="recent" onClick={(e) => this.loadData(e)}>most recent</a>
-          -
-          <a href="" data-filter="popular" onClick={(e) => this.loadData(e)}>most popular</a>
-        </div> */}
-
         <ul className="main-list">
-          {/* {this.state.hn_posts.map(item => (
-            <ListItem key={item.objectID} details={item} />
-          ))} */}
-          
-          <DataContainer isLoading={this.state.isLoading} items={this.state.hn_posts}/>
-          
-          {/* {this.state.hn_posts.filter(isSearched(this.state.searchTerm)).map(item => (
-            <ListItem key={item.objectID} details={item} />
-          ))} */}
+          <List isLoading={this.state.isLoading} items={this.state.hn_posts}/>
         </ul>
       </div>
     );

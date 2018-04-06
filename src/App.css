@@ -140,8 +140,21 @@ body {
   font-weight: bold;
 }
 
+
 .searchtabs span a:hover {
   color: lightblue;
+}
+
+.btn-datefilter {
+  margin: 0 5px 0 5px;
+  padding: 0;
+  padding: 10px;
+  border: 0px;
+  width: 75px;
+  /* background  : transparent; */
+  /* font-family : inherit; */
+  /* font-size   : 1em; */
+  cursor      : pointer;
 }
 
 /* .main-list__span:first-child {
