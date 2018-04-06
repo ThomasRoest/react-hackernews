@@ -151,6 +151,8 @@ body {
   padding: 10px;
   border: 0px;
   width: 75px;
+  background: black;
+  color: white;
   /* background  : transparent; */
   /* font-family : inherit; */
   /* font-size   : 1em; */
