@@ -22,7 +22,7 @@ function Tabs(props) {
 
 function DateFilter(props) {
   return (
-    <div>
+    <div className="date-buttons">
       <button className="btn-datefilter" data-filter="month" onClick={(e) => props.filterwithDate(e)}>month</button>
       <button className="btn-datefilter" data-filter="all" onClick={(e) => props.filterwithDate(e)}>all</button>
       {/* <span><a className="btn btn-active" data-filter="month" href="#" onClick={(e) => props.filterwithDate(e)}>month</a></span> */}

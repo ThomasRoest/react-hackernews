@@ -17,44 +17,6 @@ $font-sm: 12px;
 $font-md: 14px; */
 
 
-
-
-/* .App {
-  text-align: center;
-}
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}
-
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
-}
-
-.App-title {
-  font-size: 1.5em;
-}
-
-.App-intro {
-  font-size: large;
-}
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-} */
-
-/* .App {
-  max-width: 750px;
-  margin: 0 auto;
-  background: blue;
-
-} */
-
 body {
   margin: 0;
   padding: 0;
@@ -140,23 +102,32 @@ body {
   font-weight: bold;
 }
 
-
-.searchtabs span a:hover {
-  color: lightblue;
+.date-buttons {
+  display: flex;
+  background: black;
+  padding: 5px;
 }
 
 .btn-datefilter {
-  margin: 0 5px 0 5px;
-  padding: 0;
-  padding: 10px;
+  flex: 1 1 auto;
+  text-transform: uppercase;
+  /* padding: 10px; */
+  background: #2b3042;
+  padding: 15px;
   border: 0px;
-  width: 75px;
-  background: black;
+  border-radius: 5px;
+  /* flex-basis: 180px; */
+  /* width: 75px; */
   color: white;
+  font-weight: bold;
   /* background  : transparent; */
   /* font-family : inherit; */
   /* font-size   : 1em; */
   cursor      : pointer;
+}
+
+.btn-datefilter:active {
+  background-color: grey;
 }
 
 /* .main-list__span:first-child {
