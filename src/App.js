@@ -23,7 +23,7 @@ import axios from "axios";
 // add arguments to event handler
 const Button = ({item, currentFilter, handleFilter}) => {
   // set css class with template string
-  if(currentFilter == item) {
+  if(currentFilter === item) {
     return (
       <button className="btn-datefilter btn-active" onClick={(e) => handleFilter(e, item)}>
         {item}
@@ -191,7 +191,8 @@ class App extends Component {
       <div className="App">
         <div className="button-row">
           {this.state.queryFilters.map(item =>
-            <Button 
+            <Button
+              key={item} 
               item={item} 
               currentFilter={this.state.currentQueryfilter} 
               handleFilter={this.filterwithQuery} />
@@ -201,6 +202,7 @@ class App extends Component {
         <div className="button-row">
           {this.state.dateFilters.map(item =>
             <Button 
+              key={item}
               item={item} 
               currentFilter={this.state.currentDatefilter} 
               handleFilter={this.filterwithDate} />
