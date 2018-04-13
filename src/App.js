@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-// import logo from "./logo.svg";
 import "./App.css";
 import axios from "axios";
 
@@ -7,18 +6,6 @@ import axios from "axios";
 // const PATH_BASE = 'https://hn.algolia.com/api/v1';
 // const PATH_SEARCH = '/search';
 // const PARAM_SEARCH = 'query=';
-
-
-// function Tabs(props) {
-//   return (
-//     <div className="searchtabs">
-//       <span><a className="btn" data-query="javascript" href="#" onClick={(e) => props.filterwithQuery(e)}>Javascript</a></span>
-//       <span><a className="btn" data-query="react" href="#" onClick={(e) => props.filterwithQuery(e)}>React</a></span>
-//       <span><a className="btn" data-query="node" href="#" onClick={(e) => props.filterwithQuery(e)}>Node</a></span>
-//       <span><a className="btn" data-query="vue" href="#" onClick={(e) => props.filterwithQuery(e)}>Vue</a></span>
-//     </div>
-//   )
-// }
 
 // add arguments to event handler
 const Button = ({item, currentFilter, handleFilter}) => {
@@ -123,12 +110,6 @@ class App extends Component {
     this.filterwithDate = this.filterwithDate.bind(this);
   }
   
-  // onDismiss(id) {
-  //   const isNotId = item => item.objectID !== id;
-  //   const updatedList = this.state.list.filter(isNotId);
-  //   this.setState({ list: updatedList });
-  // }
-  
   // onSearchChange(event) {
   //   this.setState({ searchTerm: event.target.value });
   //   console.log(event.target.value);
@@ -165,10 +146,10 @@ class App extends Component {
     const dateFilter = this.state.currentDatefilter;
     const url = this.getUrl(query, dateFilter);
 
-    this.setState({ isLoading: 'progress'})
+    this.setState({ isLoading: 'progress', currentQueryfilter: query})
     axios.get(url).then(res => {
       const posts = res.data.hits;
-      this.setState({ hn_posts: posts, isLoading: 'finished', currentQueryfilter: query });
+      this.setState({ hn_posts: posts, isLoading: 'finished'  });
     });
   }
 
@@ -179,10 +160,10 @@ class App extends Component {
     const query = this.state.currentQueryfilter;
     const url = this.getUrl(query, filter);
 
-    this.setState({ isLoading: 'progress'})
+    this.setState({ isLoading: 'progress', currentDatefilter: filter})
     axios.get(url).then(res => {
       const posts = res.data.hits;
-      this.setState({ hn_posts: posts, isLoading: 'finished', currentDatefilter: filter });
+      this.setState({ hn_posts: posts, isLoading: 'finished' });
     });
   }
 
