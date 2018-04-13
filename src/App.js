@@ -9,28 +9,35 @@ import axios from "axios";
 // const PARAM_SEARCH = 'query=';
 
 
-function Tabs(props) {
-  return (
-    <div className="searchtabs">
-      <span><a className="btn" data-query="javascript" href="#" onClick={(e) => props.filterwithQuery(e)}>Javascript</a></span>
-      <span><a className="btn" data-query="react" href="#" onClick={(e) => props.filterwithQuery(e)}>React</a></span>
-      <span><a className="btn" data-query="node" href="#" onClick={(e) => props.filterwithQuery(e)}>Node</a></span>
-      <span><a className="btn" data-query="vue" href="#" onClick={(e) => props.filterwithQuery(e)}>Vue</a></span>
-    </div>
-  )
+// function Tabs(props) {
+//   return (
+//     <div className="searchtabs">
+//       <span><a className="btn" data-query="javascript" href="#" onClick={(e) => props.filterwithQuery(e)}>Javascript</a></span>
+//       <span><a className="btn" data-query="react" href="#" onClick={(e) => props.filterwithQuery(e)}>React</a></span>
+//       <span><a className="btn" data-query="node" href="#" onClick={(e) => props.filterwithQuery(e)}>Node</a></span>
+//       <span><a className="btn" data-query="vue" href="#" onClick={(e) => props.filterwithQuery(e)}>Vue</a></span>
+//     </div>
+//   )
+// }
+
+// add arguments to event handler
+const Button = ({item, currentFilter, handleFilter}) => {
+  // set css class with template string
+  if(currentFilter == item) {
+    return (
+      <button className="btn-datefilter btn-active" onClick={(e) => handleFilter(e, item)}>
+        {item}
+      </button>
+    )
+  } else {
+    return (
+      <button className="btn-datefilter" onClick={(e) => handleFilter(e, item)}>
+        {item}
+      </button>
+    )
+  }
 }
 
-function DateFilter(props) {
-  return (
-    <div className="date-buttons">
-      <button className="btn-datefilter" data-filter="month" onClick={(e) => props.filterwithDate(e)}>month</button>
-      <button className="btn-datefilter" data-filter="all" onClick={(e) => props.filterwithDate(e)}>all</button>
-      {/* <span><a className="btn btn-active" data-filter="month" href="#" onClick={(e) => props.filterwithDate(e)}>month</a></span> */}
-      {/* <span><a className="btn" data-filter="all" href="#" onClick={(e) => props.filterwithDate(e)}>all</a></span> */}
-    </div>
-  )
-
-}
 
 function ListItem(props) {
   const commentUrl = `https://news.ycombinator.com/item?id=${props.details.objectID}`
@@ -105,26 +112,27 @@ class App extends Component {
 
     this.state = { 
       searchTerm: "", 
-      hn_posts: [], 
-      queryFilter: 'javascript',
-      dateFilter: 'month',
+      hn_posts: [],
+      queryFilters: ['javascript', 'react', 'node', 'vue'], 
+      currentQueryfilter: 'javascript',
+      dateFilters: ['month', 'all'], 
+      currentDatefilter: 'month',
       isLoading: 'finished' }
-    this.onDismiss = this.onDismiss.bind(this);
-    this.onSearchChange = this.onSearchChange.bind(this);
+    // this.onSearchChange = this.onSearchChange.bind(this);
     this.filterwithQuery = this.filterwithQuery.bind(this);
     this.filterwithDate = this.filterwithDate.bind(this);
   }
   
-  onDismiss(id) {
-    const isNotId = item => item.objectID !== id;
-    const updatedList = this.state.list.filter(isNotId);
-    this.setState({ list: updatedList });
-  }
+  // onDismiss(id) {
+  //   const isNotId = item => item.objectID !== id;
+  //   const updatedList = this.state.list.filter(isNotId);
+  //   this.setState({ list: updatedList });
+  // }
   
-  onSearchChange(event) {
-    this.setState({ searchTerm: event.target.value });
-    console.log(event.target.value);
-  }
+  // onSearchChange(event) {
+  //   this.setState({ searchTerm: event.target.value });
+  //   console.log(event.target.value);
+  // }
 
   oneMonthAgo() {
     return Math.floor(new Date().getTime() / 1000 - (60*60*24*30));
@@ -150,36 +158,61 @@ class App extends Component {
     return url;
   }
 
-  filterwithQuery(e) {
-    const { query } = e.target.dataset; 
-    const dateFilter = this.state.dateFilter;
+  filterwithQuery(e, item) {
+    console.log(`${e} + ${item}`)
+    
+    const query = item; 
+    const dateFilter = this.state.currentDatefilter;
     const url = this.getUrl(query, dateFilter);
 
     this.setState({ isLoading: 'progress'})
     axios.get(url).then(res => {
       const posts = res.data.hits;
-      this.setState({ hn_posts: posts, isLoading: 'finished', queryFilter: query });
+      this.setState({ hn_posts: posts, isLoading: 'finished', currentQueryfilter: query });
     });
   }
 
-  filterwithDate(e) {
-    const { filter } = e.target.dataset; 
-    const query = this.state.queryFilter;
+  filterwithDate(e, item) {
+    console.log(`${e} + ${item}`)
+    
+    const filter  = item; 
+    const query = this.state.currentQueryfilter;
     const url = this.getUrl(query, filter);
 
     this.setState({ isLoading: 'progress'})
     axios.get(url).then(res => {
       const posts = res.data.hits;
-      this.setState({ hn_posts: posts, isLoading: 'finished', dateFilter: filter });
+      this.setState({ hn_posts: posts, isLoading: 'finished', currentDatefilter: filter });
     });
   }
 
   render() {
     return (
       <div className="App">
+        <div className="button-row">
+          {this.state.queryFilters.map(item =>
+            <Button 
+              item={item} 
+              currentFilter={this.state.currentQueryfilter} 
+              handleFilter={this.filterwithQuery} />
+          )}
+        </div>
+
+        <div className="button-row">
+          {this.state.dateFilters.map(item =>
+            <Button 
+              item={item} 
+              currentFilter={this.state.currentDatefilter} 
+              handleFilter={this.filterwithDate} />
+          )}
+        </div>
+
+
         {/* <Header onSearchChange={this.onSearchChange} /> */}
-        <Tabs filterwithQuery={this.filterwithQuery}/>
-        <DateFilter filterwithDate={this.filterwithDate}/>
+        {/* <Tabs filterwithQuery={this.filterwithQuery}/>
+        <DateFilters filterwithDate={this.filterwithDate} datefilter={this.state.dateFilter}/> */}
+        
+        
         <ul className="main-list">
           <List isLoading={this.state.isLoading} items={this.state.hn_posts}/>
         </ul>
