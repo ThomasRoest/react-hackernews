@@ -1,15 +1,9 @@
 import React, { Component } from "react";
 import "./App.css";
 import axios from "axios";
+import SearchForm from './SearchForm';
 
-// const DEFAULT_QUERY = 'javascript';
-// const PATH_BASE = 'https://hn.algolia.com/api/v1';
-// const PATH_SEARCH = '/search';
-// const PARAM_SEARCH = 'query=';
-
-// add arguments to event handler
 const Button = ({item, currentFilter, handleFilter}) => {
-  // set css class with template string
   if(currentFilter === item) {
     return (
       <button className="btn-datefilter btn-active" onClick={(e) => handleFilter(e, item)}>
@@ -40,7 +34,6 @@ function ListItem(props) {
     <li className="list-item">
       <span className="list-item__title">
         <a href={url} className="list-item__url">{title}</a>
-      {/* <p>{created_at}</p> */}
       </span>
         
       <span className="list-item__meta">{author}</span>
@@ -52,19 +45,6 @@ function ListItem(props) {
     </li>
   );
 }
-
-// function Header(props) {
-//   return (
-//     <header>
-//       <form className="searchform">
-//         <input 
-//           type="text"
-//           onChange={props.onSearchChange}
-//         />
-//       </form>
-//     </header>
-//   );
-// }
 
 function isSearched(searchTerm) {
   return function(item) {
@@ -108,12 +88,9 @@ class App extends Component {
     // this.onSearchChange = this.onSearchChange.bind(this);
     this.filterwithQuery = this.filterwithQuery.bind(this);
     this.filterwithDate = this.filterwithDate.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
-  
-  // onSearchChange(event) {
-  //   this.setState({ searchTerm: event.target.value });
-  //   console.log(event.target.value);
-  // }
 
   oneMonthAgo() {
     return Math.floor(new Date().getTime() / 1000 - (60*60*24*30));
@@ -140,8 +117,6 @@ class App extends Component {
   }
 
   filterwithQuery(e, item) {
-    console.log(`${e} + ${item}`)
-    
     const query = item; 
     const dateFilter = this.state.currentDatefilter;
     const url = this.getUrl(query, dateFilter);
@@ -154,8 +129,6 @@ class App extends Component {
   }
 
   filterwithDate(e, item) {
-    console.log(`${e} + ${item}`)
-    
     const filter  = item; 
     const query = this.state.currentQueryfilter;
     const url = this.getUrl(query, filter);
@@ -167,9 +140,26 @@ class App extends Component {
     });
   }
 
+  handleChange(value) {
+    this.setState({ searchTerm: value })
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    const url = this.getUrl(this.state.searchTerm, 'all');
+    this.setState({ isLoading: 'progress' })
+    axios.get(url).then(res => {
+      const posts = res.data.hits;
+      this.setState({ hn_posts: posts, isLoading: 'finished' });
+    });
+  }
+
   render() {
     return (
       <div className="App">
+      <SearchForm 
+        handleChange={this.handleChange} 
+        handleSubmit={this.handleSubmit} />
         <div className="button-row">
           {this.state.queryFilters.map(item =>
             <Button

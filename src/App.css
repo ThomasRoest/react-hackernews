@@ -72,9 +72,13 @@ body {
 
 .list-item__title a { color: white; }
 
-.searchform input {
+/* .searchform input {
   width: 100%;
-}
+} */
+
+
+
+
 
 .list-item__commenturl { color: white; }
 
