@@ -82,8 +82,8 @@ class App extends Component {
       hn_posts: [],
       queryFilters: ['javascript', 'react', 'node', 'vue'], 
       currentQueryfilter: 'javascript',
-      dateFilters: ['month', 'all'], 
-      currentDatefilter: 'month',
+      dateFilters: ['this month', 'all'], 
+      currentDatefilter: 'this month',
       isLoading: 'finished' }
     // this.onSearchChange = this.onSearchChange.bind(this);
     this.filterwithQuery = this.filterwithQuery.bind(this);
@@ -108,7 +108,7 @@ class App extends Component {
   getUrl(query, dateFilter){
     const BASE_URL = 'https://hn.algolia.com/api/v1/search?query=';
     let url;
-    if(dateFilter == 'month') {
+    if(dateFilter == 'this month') {
       url = `${BASE_URL}${query}&numericFilters=created_at_i>${this.oneMonthAgo()}`;
     } else if(dateFilter == 'all') {
       url = `${BASE_URL}${query}`;
@@ -121,10 +121,10 @@ class App extends Component {
     const dateFilter = this.state.currentDatefilter;
     const url = this.getUrl(query, dateFilter);
 
-    this.setState({ isLoading: 'progress', currentQueryfilter: query})
+    this.setState({ TisLoading: 'progress', currentQueryfilter: query, searchTerm: ''})
     axios.get(url).then(res => {
       const posts = res.data.hits;
-      this.setState({ hn_posts: posts, isLoading: 'finished'  });
+      this.setState({ hn_posts: posts, isLoading: 'finished' });
     });
   }
 
@@ -150,7 +150,7 @@ class App extends Component {
     this.setState({ isLoading: 'progress' })
     axios.get(url).then(res => {
       const posts = res.data.hits;
-      this.setState({ hn_posts: posts, isLoading: 'finished' });
+      this.setState({ hn_posts: posts, isLoading: 'finished', currentQueryfilter: this.state.searchTerm });
     });
   }
 
@@ -159,7 +159,8 @@ class App extends Component {
       <div className="App">
       <SearchForm 
         handleChange={this.handleChange} 
-        handleSubmit={this.handleSubmit} />
+        handleSubmit={this.handleSubmit}
+        formValue={this.state.searchTerm} />
         <div className="button-row">
           {this.state.queryFilters.map(item =>
             <Button
@@ -180,12 +181,6 @@ class App extends Component {
           )}
         </div>
 
-
-        {/* <Header onSearchChange={this.onSearchChange} /> */}
-        {/* <Tabs filterwithQuery={this.filterwithQuery}/>
-        <DateFilters filterwithDate={this.filterwithDate} datefilter={this.state.dateFilter}/> */}
-        
-        
         <ul className="main-list">
           <List isLoading={this.state.isLoading} items={this.state.hn_posts}/>
         </ul>
