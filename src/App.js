@@ -19,6 +19,9 @@ const Button = ({item, currentFilter, handleFilter}) => {
   }
 }
 
+const Header = ({ title }) =>
+  <h1 className="main-title">{title}</h1>
+
 
 function ListItem(props) {
   const commentUrl = `https://news.ycombinator.com/item?id=${props.details.objectID}`
@@ -158,6 +161,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+      <Header title={'JS Hackernews'}/>
       <SearchForm 
         handleChange={this.handleChange} 
         handleSubmit={this.handleSubmit}
