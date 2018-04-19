@@ -48,6 +48,11 @@ body {
   padding: 3px;
 }
 
+.list-item__author {
+  font-size: 0.8em;
+  margin-left: 5px;
+}
+
 .list-item__title {
   background-color: #2b3042;
   display: block;

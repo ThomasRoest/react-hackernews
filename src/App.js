@@ -34,14 +34,15 @@ function ListItem(props) {
     <li className="list-item">
       <span className="list-item__title">
         <a href={url} className="list-item__url">{title}</a>
+        <span className="list-item__author">{author}</span>
       </span>
         
-      <span className="list-item__meta">{author}</span>
+      {/* <span className="list-item__meta">{author}</span> */}
       <span className="list-item__meta">points {points}</span>
       <span className="list-item__meta">
-        <a href={commentUrl} className="list-item__commenturl">comments</a>
+        <a href={commentUrl} className="list-item__commenturl">comments ({num_comments})</a>
+        
       </span>
-      <span className="list-item__meta">{num_comments}</span>
     </li>
   );
 }
@@ -108,7 +109,7 @@ class App extends Component {
   getUrl(query, dateFilter){
     const BASE_URL = 'https://hn.algolia.com/api/v1/search?query=';
     let url;
-    if(dateFilter == 'this month') {
+      if(dateFilter == 'this month') {
       url = `${BASE_URL}${query}&numericFilters=created_at_i>${this.oneMonthAgo()}`;
     } else if(dateFilter == 'all') {
       url = `${BASE_URL}${query}`;
@@ -121,7 +122,7 @@ class App extends Component {
     const dateFilter = this.state.currentDatefilter;
     const url = this.getUrl(query, dateFilter);
 
-    this.setState({ TisLoading: 'progress', currentQueryfilter: query, searchTerm: ''})
+    this.setState({ isLoading: 'progress', currentQueryfilter: query, searchTerm: ''})
     axios.get(url).then(res => {
       const posts = res.data.hits;
       this.setState({ hn_posts: posts, isLoading: 'finished' });
@@ -147,7 +148,7 @@ class App extends Component {
   handleSubmit(e) {
     e.preventDefault();
     const url = this.getUrl(this.state.searchTerm, 'all');
-    this.setState({ isLoading: 'progress' })
+    this.setState({ isLoading: 'progress', currentDatefilter: 'all' })
     axios.get(url).then(res => {
       const posts = res.data.hits;
       this.setState({ hn_posts: posts, isLoading: 'finished', currentQueryfilter: this.state.searchTerm });
