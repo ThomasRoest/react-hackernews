@@ -27,7 +27,7 @@ body {
 .App {
   max-width: 850px;
   margin: 0 auto;
-  height: 100vh;
+  /* height: 100vh; */
 }
 
 .main-list {
@@ -167,6 +167,8 @@ $ghost: rgba(37, 45, 71, 0.34); */
   text-align: center;
   font-size: 10px;
 }
+
+.spinner-container { height: 100vh;}
 
 .spinner > div {
   background-color: white;
