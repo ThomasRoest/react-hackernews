@@ -20,7 +20,9 @@ const Button = ({item, currentFilter, handleFilter}) => {
 }
 
 const Header = ({ title }) =>
-  <h1 className="main-title">{title}</h1>
+  <header className="main-header">
+    <h1 className="main-title">{title}</h1>
+  </header>
 
 
 function ListItem(props) {

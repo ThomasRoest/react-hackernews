@@ -9,14 +9,3 @@ const SearchForm = props =>
 
 
 export default SearchForm;
-
-{/* <form action="" className='searchform'>
-    <input type="text" onChange={(e) => props.handleChange(e.target.value)}/>
-    <input type="submit" value="hello there" onClick={(e) => props.handleSubmit(e)}/>
-  </form> */}
-
-    
-{/* <div class="InputAddOn">
-  <input class="InputAddOn-field">
-  <button class="InputAddOn-item">…</button>
-</div> */}

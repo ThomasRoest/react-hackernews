@@ -27,7 +27,7 @@ body {
 .App {
   max-width: 850px;
   margin: 0 auto;
-  /* height: 100vh; */
+  height: 100vh;
 }
 
 .main-list {
@@ -48,9 +48,22 @@ body {
   padding: 3px;
 }
 
+.main-header {
+  background: black;
+  color: white;
+  margin: 0;
+  padding: 5px;
+}
+
 .main-title {
+  margin: 0;
   font-size: 1em;
-  padding: 2px;
+}
+
+@media(min-width: 450px) {
+  .main-header {
+    padding: 1em;
+  }
 }
 
 .list-item__author {
